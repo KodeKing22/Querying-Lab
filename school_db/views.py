@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from unicodedata import name
 from django.shortcuts import render
 from django.db.models import Count
@@ -145,11 +146,14 @@ SELECT `school_db_instructor`.`id`,
 # Print the instructors name and courses that he belongs to in the terminal 
 # (Do not hard code his name in the print)
 def problem_three(request):
-
-
-
+  
+    instructors_pk = Instructor.objects.get(pk=2)
+    instructor_courses = Course.objects.filter(instructor=2)
+    print(f'Instructor Name:{instructors_pk.first_name} {instructors_pk.last_name}')
+    print('Courses:')
+    for course in instructor_courses:
+      print(f'- {course.name}\n- {course.name}')
     return complete(request)
-
 
 # Supporting Query Method Documentation:
 """
@@ -194,9 +198,14 @@ SELECT `school_db_instructor`.`id`,
 # Get the count of students, courses, and instructors and print them in the terminal
 def problem_four(request):
 
-
-
-    return complete(request)
+  
+  student_count = Student.objects.all().count()
+  course_count = Course.objects.all().count()
+  count_of_instructors = Instructor.objects.all().count()
+  print(f"Students Count: {student_count}")
+  print(f"Courses Count: {course_count}")
+  print(f"Instructors Count: {count_of_instructors}")
+  return complete(request)
 
 
 # Supporting Query Method Documentation:
@@ -240,7 +249,11 @@ SELECT COUNT(*) AS `__count`
 # NOTE every time you execute this function a duplicate student will be created with a different primary key number
 def problem_five(request):
 
-
+    new_student = Student.objects.create(first_name='Jonathan', last_name='Marshall', year=2022, gpa=4.0)
+    print(f'Id: {new_student.id}')
+    print(f'Full Name: {new_student.first_name} {new_student.last_name}')
+    print(f'Year: {new_student.year}')
+    print(f'GPA: {new_student.gpa}')
 
     return complete(request)
 
@@ -276,6 +289,11 @@ def problem_six(request):
     
     # Make sure to set this equal to the primary key of the row you just created!
     student_id = 11
+    Student.objects.filter(id=student_id).update(gpa=4.5)
+    student_id = Student.objects.get(id=student_id)
+    print(f"ID: {student_id.id}")
+    print(f"Full Name: {student_id.first_name} {student_id.last_name}")
+    print(f"GPA: {student_id.gpa}")
 
 
 
@@ -325,7 +343,7 @@ def problem_seven(request):
 
     # Make sure to set this equal to the primary key of the row you just created!
     student_id = 11
-
+    Student.objects.filter(pk=student_id).delete()
 
     try:
         student = Student.objects.get(pk=student_id)
